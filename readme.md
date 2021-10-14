@@ -9,3 +9,7 @@ Be able to load this framework and start building a service network.
 
 ## API
 core(parameters, callback)
+
+
+## Dependencies
+- http://cote.js.org/ --> for mesh network prototyping
