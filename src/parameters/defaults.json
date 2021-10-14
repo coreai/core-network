@@ -1,0 +1,18 @@
+{
+    "subscriber": {
+        "name": "Generic Subscriber",
+        "namespace": "test_name",
+        "key": "test_key",
+        "subscribesTo": [
+            "test_channel"
+        ]
+    },
+    "publisher": {
+        "name": "Generic Publisher",
+        "namespace": "test_name",
+        "key": "test_key",
+        "broadcasts": [
+            "test_channel"
+        ]
+    }
+}
