@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/coreai/core-network/issues"
   },
-  "homepage": "https://github.com/coreai/core-network#readme"
+  "homepage": "https://github.com/coreai/core-network#readme",
+  "dependencies": {
+    "cote": "^1.0.3"
+  }
 }
