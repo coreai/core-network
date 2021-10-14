@@ -1,0 +1,19 @@
+{
+  "name": "core-network",
+  "version": "0.0.1",
+  "description": "A framework for functional service networks.",
+  "main": "main.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/coreai/core-network.git"
+  },
+  "author": "lolotrgeek",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/coreai/core-network/issues"
+  },
+  "homepage": "https://github.com/coreai/core-network#readme"
+}
