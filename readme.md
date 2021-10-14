@@ -8,7 +8,19 @@ Be able to load this framework and start building a service network.
 - import core
 
 ## API
-core(parameters, callback)
+core(functions, parameters)
+
+## Example
+The following is a test example:
+```
+const { Core } = require('core-network')
+
+function FunctionsToRun () {
+    return 'Hello!'
+}
+
+Core (FunctionsToRun)
+```
 
 
 ## Dependencies
