@@ -1,5 +1,6 @@
 
 function Validator(data) {
+    console.log("Validating", data)
     return data
 }
 

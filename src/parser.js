@@ -1,8 +1,15 @@
 function Parser(data) {
     try {
-        return JSON.parse(data)
+        console.log("parsing", data)
+        if (typeof data === 'string') {
+            return JSON.parse(data)
+        }
     } catch (error) {
-        return data
+        try {
+            return JSON.stringify(data)
+        } catch (error) {
+            return data
+        }
     }
 }
 

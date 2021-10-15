@@ -1,9 +1,11 @@
 const cote = require('cote')
 
-function Subscriber(options) {
-    const subscriber = new cote.Subscriber(options)
-    return subscriber
-}
+let subscriber
 
+function Subscriber(options, process) {
+    if(!subscriber) subscriber = new cote.Subscriber(options)
+    console.log('Listening on:', options.subscribesTo)
+    options.subscribesTo.map(channel => subscriber.on(channel, process))
+}
 
 module.exports = { Subscriber }

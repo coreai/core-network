@@ -12,36 +12,20 @@ const defaults = require('./parameters/defaults.json')
  */
 function Core(functions, parameters) {
     if (!parameters) parameters = defaults
-    parameters.subscriber.channels.map(channel => check(channel, functions, run))
+    if (!parameters.publisher) parameters.publisher = defaults.publisher
+    if (!parameters.subscriber) parameters.subscriber = defaults.subscriber
+    if (parameters.publisher) parameters.publisher.name = functions.name + "'s Publisher"
+    if (parameters.subscriber) parameters.subscriber.name = functions.name + "'s Subscriber"
+    if (parameters.subscriber && !parameters.generator) Subscriber(parameters.subscriber, data => Process(functions, parameters, data))
+    if (parameters.generator) setInterval(() => Publisher(parameters.publisher, functions()), parameters.generator)
+
 }
 
-/**
- * Check if arguments are runnable
- * @param {string} channel 
- * @param {function} functions 
- * @param {*} next - function to call after this is done
- */
-function check(channel, functions, next) {
-    if(!channel) Publisher.publish(parameters.publisher.broadcasts, parameters.publisher.name + ': No Channel')
-    if(!functions) Publisher.publish(parameters.publisher.broadcasts, parameters.publisher.name + ': No Functions')
-    if(!next) Publisher.publish(parameters.publisher.broadcasts, parameters.publisher.name + ': No Runner')
-    else next(channel, functions)
+function Process(functions, parameters, data) {
+    console.log(data)
+    let output = functions(Validator(Parser(data)))
+    if (output) Publisher(parameters.publisher, output)
+    return output
 }
-
-/**
- * 
- * @param {string} channel 
- * @param {function} functions 
- */
-function run(channel, functions) {
-    Subscriber.on(channel, data => {
-        let parsed_data = Parser(data)
-        let validated_data = Validator(parsed_data)
-        let returned_data
-        if (validated_data) returned_data = functions(validated_data)
-        if (returned_data) Publisher.publish(parameters.publisher.broadcasts, returned_data)
-    })
-}
-
 
 module.exports = { Core }
