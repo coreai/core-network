@@ -1,6 +1,5 @@
-function Parser(data) {
+function Parser(data, name) {
     try {
-        console.log("parsing", data)
         if (typeof data === 'string') {
             return JSON.parse(data)
         }

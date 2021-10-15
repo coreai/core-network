@@ -14,5 +14,6 @@
         "broadcasts": [
             "test_channel"
         ]
-    }
+    },
+    "logging" : "true"
 }

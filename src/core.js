@@ -22,10 +22,15 @@ function Core(functions, parameters) {
 }
 
 function Process(functions, parameters, data) {
-    console.log(data)
-    let output = functions(Validator(Parser(data)))
+    log(parameters, "Processing", data)
+    let output = functions(log(parameters, "Validating", Validator(log(parameters, "Parsing", Parser(data)))))
     if (output) Publisher(parameters.publisher, output)
     return output
+}
+
+function log(parameters, process, data) {
+    if (parameters.logging) console.log(`[${parameters.subscriber.name}] ${process} :`, data)
+    return data
 }
 
 module.exports = { Core }
