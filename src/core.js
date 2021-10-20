@@ -7,18 +7,33 @@ const defaults = require('./parameters/defaults.json')
 
 /**
  * Load parameters, subscribes to channels, runs function graph, and publishes results
- * @param {*} parameters - setup for publisher and subscriber
+ * @param {Object} parameters - setup for publisher and subscriber
  * @param {function} functions - callback to the function graph to be run in service, must return
  */
 function Core(functions, parameters) {
+    Build(functions, Parameterize(functions, parameters))
+}
+
+
+function Build(functions, parameters) {
+    if (parameters.subscriber && !parameters.generator) Subscriber(parameters.subscriber, data => Process(functions, parameters, data))
+    if (parameters.generator) setInterval(() => Publisher(parameters.publisher, functions()), parameters.generator)
+}
+
+/**
+ * 
+ * @param {Object} parameters - setup for publisher and subscriber
+ * @param {function} functions - callback to the function graph to be run in service, must return
+ */
+function Parameterize(functions, parameters) {
+    // Load Defaults if no parameters passed
     if (!parameters) parameters = defaults
     if (!parameters.publisher) parameters.publisher = defaults.publisher
     if (!parameters.subscriber) parameters.subscriber = defaults.subscriber
+    // Name functions for logging purposes
     if (parameters.publisher) parameters.publisher.name = functions.name + "'s Publisher"
     if (parameters.subscriber) parameters.subscriber.name = functions.name + "'s Subscriber"
-    if (parameters.subscriber && !parameters.generator) Subscriber(parameters.subscriber, data => Process(functions, parameters, data))
-    if (parameters.generator) setInterval(() => Publisher(parameters.publisher, functions()), parameters.generator)
-
+    return parameters
 }
 
 function Process(functions, parameters, data) {
@@ -29,6 +44,7 @@ function Process(functions, parameters, data) {
 }
 
 function log(parameters, process, data) {
+
     if (parameters.logging) console.log(`[${parameters.subscriber.name}] ${process} :`, data)
     return data
 }
