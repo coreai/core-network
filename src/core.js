@@ -14,10 +14,10 @@ function Core(functions, parameters) {
     Build(functions, Parameterize(functions, parameters))
 }
 
-
 function Build(functions, parameters) {
     if (parameters.subscriber && !parameters.generator) Subscriber(parameters.subscriber, data => Process(functions, parameters, data))
-    if (parameters.generator) setInterval(() => Publisher(parameters.publisher, functions()), parameters.generator)
+    if (parameters.generator && typeof parameters.generator === 'number') setInterval(() => Publisher(parameters.publisher, functions()), parameters.generator)
+    if (parameters.generator) Publisher(parameters.publisher, functions())
 }
 
 /**
@@ -26,11 +26,9 @@ function Build(functions, parameters) {
  * @param {function} functions - callback to the function graph to be run in service, must return
  */
 function Parameterize(functions, parameters) {
-    // Load Defaults if no parameters passed
     if (!parameters) parameters = defaults
     if (!parameters.publisher) parameters.publisher = defaults.publisher
     if (!parameters.subscriber) parameters.subscriber = defaults.subscriber
-    // Name functions for logging purposes
     if (parameters.publisher) parameters.publisher.name = functions.name + "'s Publisher"
     if (parameters.subscriber) parameters.subscriber.name = functions.name + "'s Subscriber"
     return parameters
@@ -44,7 +42,6 @@ function Process(functions, parameters, data) {
 }
 
 function log(parameters, process, data) {
-
     if (parameters.logging) console.log(`[${parameters.subscriber.name}] ${process} :`, data)
     return data
 }
