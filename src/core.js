@@ -11,13 +11,17 @@ const defaults = require('./parameters/defaults.json')
  * @param {function} functions - callback to the function graph to be run in service, must return
  */
 function Core(functions, parameters) {
-    Build(functions, Parameterize(functions, parameters))
+    return Build(functions, Parameterize(functions, parameters))
 }
 
 function Build(functions, parameters) {
-    if (parameters.subscriber && !parameters.generator) Subscriber(parameters.subscriber, data => Process(functions, parameters, data))
-    if (parameters.generator && typeof parameters.generator === 'number') setInterval(() => Publisher(parameters.publisher, functions()), parameters.generator)
-    if (parameters.generator) Publisher(parameters.publisher, functions())
+    let state
+    if (parameters.subscriber && !parameters.generator) state = Subscriber(parameters.subscriber, data => Process(functions, parameters, data))
+    if (parameters.generator ) {
+        if (typeof parameters.generator === 'number') state = setInterval(() => Publisher(parameters.publisher, functions()), parameters.generator)
+        else state = Publisher(parameters.publisher, functions())
+    } 
+    return state
 }
 
 /**
