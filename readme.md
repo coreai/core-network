@@ -1,5 +1,5 @@
 # Core Network
-
+A framework for quickly implementing core network protocols.
 
 ## Goal
 Be able to load this framework and start building a service network.
@@ -25,25 +25,31 @@ Core(functions, parameters)
 
     logging : boolean 
 
-    generator : number - does not instantiate a subscriber, only a publisher that runs functions at a given interval
+    generator : number | boolean - runs a node without a subscriber
+        true --> runs functions once
+        number --> runs at an interval.
 
     
 
 }
 
-## Example
-The following is a test example:
+## Quickstart
 ```
 const { Core } = require('core-network')
 
-function FunctionsToRun () {
-    return 'Hello!'
+function testGenerator() {
+    return "Hello! now: " + Date.now()
 }
 
-Core (FunctionsToRun)
+function testListener(data) {
+    // have to process for all possible inputs
+    console.log("Heard: ", data)
+}
+
+Core(testListener)
+Core(testGenerator, { generator: 1000 })
+
 ```
-
-
 
 
 ## Dependencies
