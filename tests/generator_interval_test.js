@@ -1,16 +1,4 @@
-const { Core } = require('./main')
-// function testGenerator() {
-//     return "Hello! now: " + Date.now()
-// }
-
-// function testListener(data) {
-//     // have to process for all possible inputs
-//     console.log("Heard: ", data)
-// }
-
-// Core(testListener)
-// // Core(testGenerator, { generator: 1000 })
-// Core(testGenerator, { generator: true })
+const { Core } = require('../main')
 
 const equals = (a, b) =>
   a.length === b.length &&
@@ -60,16 +48,4 @@ function generator_interval_test(callback) {
     })
 }
 
-function generator_test(callback) {
-    let result = false
-    let publisher = Core(() => "generator_test_" + Date.now())
-
-    let subscriber = Core(data => {
-        let expected = "generator_test_" + Date.now()
-        if(data === expected) result = true
-        callback(result)
-    })
-}
-
-generator_test(result => console.log(result))
 generator_interval_test(result => console.log("generator_interval_test result: ", result))
