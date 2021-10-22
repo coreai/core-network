@@ -2,6 +2,7 @@ const { Publisher } = require('./publisher')
 const { Subscriber } = require('./subscriber')
 const { Validator } = require('./validator')
 const { Parser } = require('./parser')
+const { log } = require('./utils')
 const defaults = require('./parameters/defaults.json')
 
 
@@ -16,11 +17,13 @@ function Core(functions, parameters) {
 
 function Build(functions, parameters) {
     let state
-    if (parameters.subscriber && !parameters.generator) state = Subscriber(parameters.subscriber, data => Process(functions, parameters, data))
-    if (parameters.generator ) {
-        if (typeof parameters.generator === 'number') state = setInterval(() => Publisher(parameters.publisher, functions()), parameters.generator)
-        else state = Publisher(parameters.publisher, functions())
-    } 
+    if (parameters.generator && parameters.generator !== 'false') {
+        if (typeof parameters.generator === 'number') state = setInterval(() => Publisher(parameters, functions()), parameters.generator)
+        else state = Publisher(parameters, functions())
+    }
+    else {
+        state = Subscriber(parameters, data => Process(functions, parameters, data))
+    }
     return state
 }
 
@@ -30,24 +33,19 @@ function Build(functions, parameters) {
  * @param {function} functions - callback to the function graph to be run in service, must return
  */
 function Parameterize(functions, parameters) {
-    if (!parameters) parameters = defaults
-    if (!parameters.publisher) parameters.publisher = defaults.publisher
-    if (!parameters.subscriber) parameters.subscriber = defaults.subscriber
-    if (parameters.publisher) parameters.publisher.name = functions.name + "'s Publisher"
-    if (parameters.subscriber) parameters.subscriber.name = functions.name + "'s Subscriber"
+    // if (!parameters) parameters = defaults
+    if (!parameters.broadcasts) parameters.broadcasts = defaults.broadcasts
+    if (!parameters.subscribesTo) parameters.subscribesTo = defaults.subscribesTo
+    if (!parameters.name || parameters.name.length === 0) parameters.name = defaults.name
+    // log(functions, parameters, parameters)
     return parameters
 }
 
 function Process(functions, parameters, data) {
     log(parameters, "Processing", data)
     let output = functions(log(parameters, "Validating", Validator(log(parameters, "Parsing", Parser(data)))))
-    if (output) Publisher(parameters.publisher, output)
+    Publisher(parameters, output)
     return output
-}
-
-function log(parameters, process, data) {
-    if (parameters.logging) console.log(`[${parameters.subscriber.name}] ${process} :`, data)
-    return data
 }
 
 module.exports = { Core }

@@ -1,4 +1,5 @@
 const { Core } = require('./main')
+
 // function testGenerator() {
 //     return "Hello! now: " + Date.now()
 // }
@@ -35,19 +36,8 @@ function generator_interval_test(callback) {
     } while (expected.length < total)
     expected.push('done')
 
-    console.log("expected: ", expected)
+    console.log("expects: ", expected)
     count = 0
-
-    let publisher = Core(() => {
-        if (count >= total) {
-            clearInterval(publisher)
-            console.log(publisher)
-            return 'done'
-        }
-        if (count < total) count++
-        return count
-    }, { generator: 1000 })
-
 
     let heard = []
     let subscriber = Core(data => {
@@ -57,19 +47,16 @@ function generator_interval_test(callback) {
             result = equals(expected, heard)
             callback(result)
         }
-    })
+    }, {name: "test_subscriber", logging: true})
+
+    let publisher = Core(() => {
+        if (count >= total) {
+            clearInterval(publisher)
+            return 'done'
+        }
+        if (count < total) count++
+        return count
+    }, { name: "test publisher", broadcasts: [ 'test_input_channel' ], generator: 1000, logging: true})
 }
 
-function generator_test(callback) {
-    let result = false
-    let publisher = Core(() => "generator_test_" + Date.now())
-
-    let subscriber = Core(data => {
-        let expected = "generator_test_" + Date.now()
-        if(data === expected) result = true
-        callback(result)
-    })
-}
-
-generator_test(result => console.log(result))
 generator_interval_test(result => console.log("generator_interval_test result: ", result))
