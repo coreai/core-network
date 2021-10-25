@@ -16,14 +16,21 @@ function Core(functions, parameters) {
 }
 
 function Build(functions, parameters) {
-    let state
+    let state = {}
     if (parameters.generator && parameters.generator !== 'false') {
-        if (typeof parameters.generator === 'number') state = setInterval(() => Publisher(parameters, functions()), parameters.generator)
-        else state = Publisher(parameters, functions())
+        if (typeof parameters.generator === 'number') state = setInterval(() => Publisher(state, parameters, functions()), parameters.generator)
+        else state = Publisher(state, parameters, functions())
     }
     else {
-        state = Subscriber(parameters, data => Process(functions, parameters, data))
+        state = Subscriber(state, parameters, data => {
+            // console.log(parameters)
+            log(parameters, "Processing", data)
+            let output = functions(log(parameters, "Validating", Validator(log(parameters, "Parsing", Parser(data)))))
+            state = Publisher(state, parameters, output)
+            return output
+        })
     }
+    // log(parameters, "Build", state)
     return state
 }
 
@@ -33,19 +40,17 @@ function Build(functions, parameters) {
  * @param {function} functions - callback to the function graph to be run in service, must return
  */
 function Parameterize(functions, parameters) {
-    // if (!parameters) parameters = defaults
-    if (!parameters.broadcasts) parameters.broadcasts = defaults.broadcasts
-    if (!parameters.subscribesTo) parameters.subscribesTo = defaults.subscribesTo
-    if (!parameters.name || parameters.name.length === 0) parameters.name = defaults.name
-    // log(functions, parameters, parameters)
+    if (!parameters) parameters = {}
+    if (!parameters.name || parameters.name.length === 0) parameters.name = defaults.name + Date.now()
+    if (!parameters.broadcasts) parameters.broadcasts = [parameters.name + '_' + defaults.broadcasts[0]]
+    if (!parameters.subscribesTo) parameters.subscribesTo = [parameters.name + '_' + defaults.subscribesTo[0]]
+    if (!parameters.logging) parameters.logging = defaults.logging
+    log(parameters, "Parameters", parameters)
     return parameters
 }
 
 function Process(functions, parameters, data) {
-    log(parameters, "Processing", data)
-    let output = functions(log(parameters, "Validating", Validator(log(parameters, "Parsing", Parser(data)))))
-    Publisher(parameters, output)
-    return output
+
 }
 
 module.exports = { Core }

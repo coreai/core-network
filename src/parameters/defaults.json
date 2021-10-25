@@ -2,8 +2,8 @@
     "name": "test",
     "namespace": "test_name",
     "key": "test_key",
-    "subscribesTo": ["test_input_channel"],
-    "broadcasts": ["test_output_channel"],
+    "subscribesTo": ["input"],
+    "broadcasts": ["output"],
     "logging": "true",
     "generator": "false"
 }
