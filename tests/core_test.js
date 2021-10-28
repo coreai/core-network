@@ -1,16 +1,11 @@
 const { Core } = require('../main')
 
 function node(data, passes) {
-    let count
-    let result = false
-    if (count === passes) return 'done'
+    console.log(data, passes)
+    if (data === passes) return 'done'
     if (data === 'done') return null
-    if (typeof data === 'number') {
-        if (typeof count !== 'number') count = data
-        if (data === count + 1) result = true
-        count++
-    }
-    return count
+    if (typeof data === 'number') data++
+    return data
 }
 
 
