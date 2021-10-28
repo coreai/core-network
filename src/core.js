@@ -1,56 +1,79 @@
-const { Publisher } = require('./publisher')
+const { Publisher, Publish } = require('./publisher')
 const { Subscriber } = require('./subscriber')
 const { Validator } = require('./validator')
 const { Parser } = require('./parser')
 const { log } = require('./utils')
 const defaults = require('./parameters/defaults.json')
+const branchy = require('branchy')
 
 
-/**
- * Load parameters, subscribes to channels, runs function graph, and publishes results
- * @param {Object} parameters - setup for publisher and subscriber
- * @param {function} functions - callback to the function graph to be run in service, must return
- */
+
 function Core(functions, parameters) {
-    return Build(functions, Parameterize(functions, parameters))
+    return Build(functions, Parameterize(parameters))
 }
 
 function Build(functions, parameters) {
-    let state = {}
+    let state = State(parameters)
     if (parameters.generator && parameters.generator !== 'false') {
-        if (typeof parameters.generator === 'number') state = setInterval(() => Publisher(state, parameters, functions()), parameters.generator)
-        else state = Publisher(state, parameters, functions())
+        let options = Options(parameters, state, 'publisher')
+        let publisher = Publisher(options)
+        state = State(parameters, state, { publisher })
+        if (typeof parameters.generator === 'number') setInterval(() => Publish(options, functions()), parameters.generator)
+        else Publish(options, functions())
     }
     else {
-        state = Subscriber(state, parameters, data => {
-            // console.log(parameters)
+        let publisher = Publisher(Options(parameters, state, 'publisher'))
+        state = State(parameters, state, { publisher })
+        let subscriber = Subscriber(Options(parameters, state, 'subscriber'), data => {
             log(parameters, "Processing", data)
-            let output = functions(log(parameters, "Validating", Validator(log(parameters, "Parsing", Parser(data)))))
-            state = Publisher(state, parameters, output)
-            return output
+            let valid_data = Validator(parameters, Parser(parameters, data))
+            if (valid_data !== false) {
+                let output = functions(valid_data)
+                Publish(Options(parameters, state, 'publisher'), output)
+            }
         })
+        state = State(parameters, state, { subscriber })
     }
+    console.log('STATE:', state)
+
     // log(parameters, "Build", state)
+}
+
+function State(parameters, state, { publisher, subscriber } = {}) {
+    if (!state) state = {}
+    if (!state[parameters.name]) {
+        state[parameters.name] = {}
+        Object.assign(state[parameters.name], parameters)
+    }
+    if (publisher) {
+        state[parameters.name].publisher = publisher
+    }
+
+    if (subscriber) {
+        state[parameters.name].subscriber = subscriber
+    }
     return state
 }
 
-/**
- * 
- * @param {Object} parameters - setup for publisher and subscriber
- * @param {function} functions - callback to the function graph to be run in service, must return
- */
-function Parameterize(functions, parameters) {
+function Options(parameters, state, type) {
+    try {
+        state[parameters.name].name = parameters.name + '_' + type
+        return state[parameters.name]
+    } catch (error) {
+        log(parameters, `No options for ${parameters.name} in state -->`, state)
+    }
+}
+
+function Parameterize(parameters) {
     if (!parameters) parameters = {}
     if (!parameters.name || parameters.name.length === 0) parameters.name = defaults.name + Date.now()
     if (!parameters.broadcasts) parameters.broadcasts = [parameters.name + '_' + defaults.broadcasts[0]]
-    if (!parameters.subscribesTo) parameters.subscribesTo = [parameters.name + '_' + defaults.subscribesTo[0]]
+    if (!parameters.subscribesTo && !parameters.generator) parameters.subscribesTo = [parameters.name + '_' + defaults.subscribesTo[0]]
     if (!parameters.logging) parameters.logging = defaults.logging
-    log(parameters, "Parameters", parameters)
+    // log(parameters, "Parameters", parameters)
     return parameters
 }
 
-function Process(functions, parameters, data) {
 
-}
 
 module.exports = { Core }

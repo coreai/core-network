@@ -1,4 +1,7 @@
-function Parser(data, name) {
+const { log } = require('./utils')
+
+function Parser(parameters, data) {
+    log(parameters, `Parsing {${typeof data}}` , data )
     try {
         if (typeof data === 'string') {
             return JSON.parse(data)

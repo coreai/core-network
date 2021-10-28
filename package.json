@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/coreai/core-network#readme",
   "dependencies": {
+    "branchy": "^1.0.0",
     "cote": "^1.0.3"
   }
 }
