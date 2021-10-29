@@ -29,9 +29,12 @@ Core(functions, parameters)
         true --> runs functions once
         number --> runs at an interval.
 
-    
+## Notes    
+Nodes will publish to a channel `"<name>_output"` if not passed any broadcasts. For example a node named `"node_1"` will publish to `"node_1_output"` by default.
 
-}
+A Node can subscribe to `"*"` in order to subsribe to all channels. *WARNING* this can greatly increase the nodes inputs, it is advised to add a `key` and `namespace`
+
+For now `"tests"` is a dedicated `key` and `namespace`. Avoid test data from leaking into any existing nodes avoid from using `"tests"` as a `key` or `namespace`.
 
 ## Quickstart
 ```
