@@ -7,7 +7,9 @@ const { log } = require('./utils')
  */
 function Validator(parameters, data) {
     log(parameters, "Validating", data)
-    if (typeof data === 'null' || typeof data === 'undefined' || isNaN(data)) { log(parameters, "Data inValid", data); return false }
+    if (typeof data === 'null' || data === null) { log(parameters, "Data inValid --> null", data); return false }
+    if (typeof data === 'undefined'|| data === undefined) { log(parameters, "Data inValid  --> undefined", data); return false }
+    if (typeof data === 'number' && isNaN(data)) { log(parameters, "Data inValid --> NaN", data); return false }
     log(parameters, "Data Valid", data)
     return data
 }
