@@ -1,8 +1,6 @@
 const { Core } = require('../main')
+const { equals } = require('../src/utils')
 
-const equals = (a, b) =>
-  a.length === b.length &&
-  a.every((v, i) => v === b[i])
 
 /**
  * Generator Test - Interval
@@ -29,23 +27,24 @@ function generator_interval_test(callback) {
     let publisher = Core(() => {
         if (count >= total) {
             clearInterval(publisher)
-            console.log(publisher)
             return 'done'
         }
         if (count < total) count++
         return count
-    }, { generator: 1000 })
+    }, { key: "tests", generator: 1000 })
 
 
     let heard = []
     let subscriber = Core(data => {
         console.log("Heard: ", data)
-        heard.push(data)
+        if(typeof data === 'number' || typeof data === 'string') heard.push(data)
+        
         if(data === 'done') {
             result = equals(expected, heard)
             callback(result)
+            return heard
         }
-    })
+    },{key: "tests", subscribesTo: ['*']})
 }
 
 generator_interval_test(result => console.log("generator_interval_test result: ", result))
