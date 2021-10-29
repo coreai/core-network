@@ -1,4 +1,5 @@
 const { Core } = require('../main')
+const { run } = require('./utils/run')
 
 function generator_test(callback) {
     let result = false
@@ -13,4 +14,4 @@ function generator_test(callback) {
     }, { key: "tests", subscribesTo: ['*'] })
 }
 
-generator_test(result => console.log("generator_test result: ", result))
+run(generator_test)

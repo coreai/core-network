@@ -1,12 +1,15 @@
 const { Core } = require('../main')
+const { run } = require('./utils/run')
 function core_test(callback) {
     try {
         Core(() => {
             callback(true)
-            return 
-        }, {key:"tests", generator: true})
+            return
+        }, { key: "tests", generator: true })
     } catch (error) {
         callback(false)
     }
 }
-core_test(result => console.log("core_test result: ", result))
+
+
+run(core_test)

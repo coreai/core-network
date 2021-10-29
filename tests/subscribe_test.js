@@ -1,4 +1,5 @@
 const { Core } = require('../main')
+const { run } = require('./utils/run')
 
 function node(data, passes, callback) {
     if (data === passes) return 'done'
@@ -24,4 +25,4 @@ function subscribe_test(callback) {
     setTimeout(() => Core(() => 0, { name: "core_test_generator", key: "tests", generator: true }), 1000)
 }
 
-subscribe_test(result => console.log("subscribe_test result: ", result))
+run(subscribe_test)

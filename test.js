@@ -1,62 +1,57 @@
-const { Core } = require('./main')
+const path = require('path')
+const fs = require('fs')
+const { fork } = require('child_process')
 
-// function testGenerator() {
-//     return "Hello! now: " + Date.now()
+const directoryPath = path.join(__dirname, '/tests/')
+
+fs.readdir(directoryPath, (err, files) => {
+    if (err) console.log(err)
+    for( const file of files) {
+        if (file === 'utils') return
+        console.log(directoryPath + file)
+        let child = fork(directoryPath + file, { stdio: ['ignore', 'ignore', 'ignore', 'ipc'] })
+        child.send('START')
+        child.on('message', message => {
+            console.log(message)
+            if(message.result) {
+                child.kill('SIGINT')
+            }
+        })        
+    }
+})
+
+//////
+// function Test(file) {
+//     return new Promise((resolve, reject) => {
+//         if (file === 'utils') resolve()
+//         let child = fork(directoryPath + file, { stdio: ['ignore', 'ignore', 'ipc'] })
+//         child.on('message', message => {
+//             console.log(message)
+//             resolve(message)
+//         })
+//     })
 // }
 
-// function testListener(data) {
-//     // have to process for all possible inputs
-//     console.log("Heard: ", data)
+// async function Iterate(files) {
+//     await files.reduce(async (previous, current, index) => {
+//         try {
+//             await previous
+//             await Test(current)
+//         } catch (error) {
+//             console.log(error)
+//         }
+//     }, Promise.resolve())    
 // }
 
-// Core(testListener)
-// // Core(testGenerator, { generator: 1000 })
-// Core(testGenerator, { generator: true })
+// async function Begin() {
+//     return new Promise((resolve, reject) => fs.readdir(directoryPath, (err, files) => {
+//         if (err) reject (err)
+//         resolve( files)
+//     }))
+// }
 
-const equals = (a, b) =>
-  a.length === b.length &&
-  a.every((v, i) => v === b[i])
+// async function Run() {
+//     let tests = await Begin()
+//     await Iterate(tests)
+// }
 
-/**
- * Generator Test - Interval
- * 
- * Builds expected messages based on count of messages to send. 
- * Listens for expected messages, compares recieved against expected.
- */
-function generator_interval_test(callback) {
-    let count = 0
-    let total = 3
-
-    let result = false
-    let expected = []
-    console.log('preparing generator test...')
-    do {
-        count++
-        expected.push(count)
-    } while (expected.length < total)
-    expected.push('done')
-
-    console.log("expects: ", expected)
-    count = 0
-
-    let heard = []
-    let subscriber = Core(data => {
-        console.log("Heard: ", data)
-        heard.push(data)
-        if(data === 'done') {
-            result = equals(expected, heard)
-            callback(result)
-        }
-    }, {name: "test_subscriber", logging: true})
-
-    let publisher = Core(() => {
-        if (count >= total) {
-            clearInterval(publisher)
-            return 'done'
-        }
-        if (count < total) count++
-        return count
-    }, { name: "test publisher", broadcasts: [ 'test_input_channel' ], generator: 1000, logging: true})
-}
-
-generator_interval_test(result => console.log("generator_interval_test result: ", result))

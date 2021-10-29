@@ -1,4 +1,5 @@
 const { Core } = require('../main')
+const { run } = require('./utils/run')
 
 function namespace_test(callback) {
     let result = false
@@ -21,4 +22,4 @@ function namespace_test(callback) {
     }, { key: "tests", name:"node_2", namespace:"not_test", subscribesTo: ['*'] })    
 }
 
-namespace_test(result => console.log("namespace_test result: ", result))
+run(namespace_test)

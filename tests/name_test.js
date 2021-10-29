@@ -1,4 +1,5 @@
 const { Core } = require('../main')
+const { run } = require('./utils/run')
 
 /**
  * Tests the name parameter and basic instantiation of publisher and subscriber components in a node
@@ -18,4 +19,4 @@ function name_test(callback) {
     }, { name: expected, key: "tests", subscribesTo: ['*'] })
 }
 
-name_test(result => console.log("name_test result: ", result))
+run(name_test)

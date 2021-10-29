@@ -1,4 +1,5 @@
 const { Core } = require('../main')
+const { run } = require('./utils/run')
 
 function key_test(callback) {
     let result = false
@@ -21,4 +22,4 @@ function key_test(callback) {
     }, { key: "not_test", name:"node_2", namespace:"test", subscribesTo: ['*'] })    
 }
 
-key_test(result => console.log("key_test result: ", result))
+run(key_test)

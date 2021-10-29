@@ -1,6 +1,6 @@
 const { Core } = require('../main')
 const { equals } = require('../src/utils')
-
+const { run } = require('./utils/run')
 
 /**
  * Generator Test - Interval
@@ -47,4 +47,4 @@ function generator_interval_test(callback) {
     },{key: "tests", subscribesTo: ['*']})
 }
 
-generator_interval_test(result => console.log("generator_interval_test result: ", result))
+run(generator_interval_test)

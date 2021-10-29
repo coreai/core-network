@@ -1,4 +1,5 @@
 const { Core } = require('../main')
+const { run } = require('./utils/run')
 
 function node(data, passes, name) {
     if (data === passes) return {status: 'done', name}
@@ -26,4 +27,4 @@ function broadcast_test(callback) {
 
 }
 
-broadcast_test(result => console.log("broadcast_test result: ", result))
+run(broadcast_test)

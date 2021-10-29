@@ -1,4 +1,5 @@
 const { Core } = require('../main')
+const { run } = require('./utils/run')
 
 /**
  * NOTE: this will fail since multi channel broadcast is not implmented.
@@ -33,4 +34,4 @@ function broadcast_multi_test(callback) {
     }, { key: "tests", name: "node_3", subscribesTo: ['node_1', 'node_2'] })
 }
 
-broadcast_multi_test(result => console.log("broadcast_multi_test result: ", result))
+run(broadcast_multi_test)
