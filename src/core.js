@@ -4,36 +4,33 @@ const { log } = require('./utils')
 const defaults = require('./parameters/defaults.json')
 const { Subscriber, Publisher } = require('cote')
 
-
-
 function Core(functions, parameters) {
     return Build(functions, Parameterize(parameters))
 }
 
 function Build(functions, parameters) {
     if (parameters.generator && parameters.generator !== 'false') {
-        const publisher = new Publisher({...parameters, name: parameters.name + "_publisher"})
-        if (typeof parameters.generator === 'number') setInterval(() => publisher.publish(parameters.broadcasts[0], functions()), parameters.generator)
-        else publisher.publish(parameters.broadcasts[0], functions())
+        const publisher = new Publisher({ ...parameters, name: parameters.name + "_publisher" })
+        if (typeof parameters.generator === 'number') return setInterval(() => publisher.publish(parameters.broadcasts[0], functions()), parameters.generator)
+        else return publisher.publish(parameters.broadcasts[0], functions())
     }
     else {
-        const publisher = new Publisher({...parameters, name: parameters.name + "_publisher"})
-        const subscriber = new Subscriber({...parameters, name: parameters.name + "_subscriber"})
+        const publisher = new Publisher({ ...parameters, name: parameters.name + "_publisher" })
+        const subscriber = new Subscriber({ ...parameters, name: parameters.name + "_subscriber" })
         parameters.subscribesTo.forEach(channel => {
             subscriber.on(channel, data => {
-                log(parameters, "Processing", data)
                 let valid_data = Validator(parameters, Parser(parameters, data))
                 if (valid_data !== false) {
+                    log(parameters, "Processing", data)
                     let output = functions(valid_data)
                     publisher.publish(parameters.broadcasts[0], output)
                 }
             })
         })
-
+        return { publisher, subscriber }
     }
     // log(parameters, "Build", state)
 }
-
 
 function Parameterize(parameters) {
     if (!parameters) parameters = {}
@@ -44,7 +41,5 @@ function Parameterize(parameters) {
     // log(parameters, "Parameters", parameters)
     return parameters
 }
-
-
 
 module.exports = { Core }
