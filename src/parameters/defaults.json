@@ -1,6 +1,6 @@
 {
     "name": "test",
-    "namespace": "test_name",
+    "namespace": "test_namespace",
     "key": "test_key",
     "subscribesTo": ["input"],
     "broadcasts": ["output"],
