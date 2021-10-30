@@ -4,20 +4,23 @@ const { fork } = require('child_process')
 
 const directoryPath = path.join(__dirname, '/tests/')
 
+// failure on timeout
+
 fs.readdir(directoryPath, (err, files) => {
     if (err) console.log(err)
-    for( const file of files) {
-        if (file === 'utils') return
+    let count = 1
+    files.forEach((file, i) => {
+        if (file === 'utils') files.splice(i)
         console.log(directoryPath + file)
         let child = fork(directoryPath + file, { stdio: ['ignore', 'ignore', 'ignore', 'ipc'] })
-        child.send('START')
         child.on('message', message => {
-            console.log(message)
-            if(message.result) {
-                child.kill('SIGINT')
+            if(message.name) {
+                console.log(`${count}/${files.length}`, message)
+                count++
             }
-        })        
-    }
+            else console.log(message)
+        })     
+    })
 })
 
 //////
