@@ -1,6 +1,8 @@
 const { Core } = require('../main')
 const { run } = require('./utils/run')
 
+const namespace = "broadcast_test"
+
 function node(data, passes, name) {
     if (data === passes) return {status: 'done', name}
     if (data.status === 'done') return 
@@ -12,9 +14,9 @@ function broadcast_test(callback) {
     let passes = 4
     let node_1 = false
     let node_2 = false
-    Core(data => node(data, passes, "node_1"), { name: "node_1", key: "tests", subscribesTo: ['test_channel'], broadcasts: ['test_channel'], logging: false})
-    Core(data => node(data, passes, "node_2"), { name: "node_2", key: "tests", subscribesTo: ['test_channel'], broadcasts: ['test_channel'], logging: false})
-    setTimeout(() => Core(() => 0, { name: "generator", key: "tests", generator: true, broadcasts: ['test_channel'], logging: false}), 1000)
+    Core(data => node(data, passes, "node_1"), { name: "node_1", key: "tests", namespace: namespace, subscribesTo: ['test_channel'], broadcasts: ['test_channel'], logging: false})
+    Core(data => node(data, passes, "node_2"), { name: "node_2", key: "tests", namespace: namespace, subscribesTo: ['test_channel'], broadcasts: ['test_channel'], logging: false})
+    setTimeout(() => Core(() => 0, { name: "generator", key: "tests", namespace: namespace, generator: true, broadcasts: ['test_channel'], logging: false}), 1000)
     Core(data => {
         if(node_1 === true && node_2 === true) return 
         if(data.status === 'done') {
@@ -23,7 +25,7 @@ function broadcast_test(callback) {
             if(node_1 === true && node_2 === true) callback(true)
         }
         
-    }, { name: "node_3", key: "tests", subscribesTo: ['test_channel'], logging: false})
+    }, { name: "node_3", key: "tests", namespace: namespace, subscribesTo: ['test_channel'], logging: false})
 
 }
 

@@ -1,4 +1,3 @@
-const { Core } = require('../main')
 const { run } = require('./utils/run')
 
 /**
@@ -17,7 +16,7 @@ const { run } = require('./utils/run')
  * `generator` : start generator node, listen for result, interval also
  */
 function parameterize_test(callback) {
-    Core(data => callback(true))
+    callback(true)
 }
 
 run(parameterize_test)

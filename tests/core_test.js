@@ -5,7 +5,7 @@ function core_test(callback) {
         Core(() => {
             callback(true)
             return
-        }, { key: "tests", generator: true })
+        }, { key: "tests", namespace:"core_test", generator: true })
     } catch (error) {
         callback(false)
     }

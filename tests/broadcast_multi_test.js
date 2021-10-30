@@ -1,6 +1,8 @@
 const { Core } = require('../main')
 const { run } = require('./utils/run')
 
+const namespace = "broadcast_multi_test"
+
 /**
  * NOTE: this will fail since multi channel broadcast is not implmented.
  * @param {*} callback 
@@ -15,14 +17,14 @@ function broadcast_multi_test(callback) {
             result[0] = true
             return true
         }
-    }, { key: "tests", name: "node_1", subscribesTo: ['test_channel'] })
+    }, { key: "tests", namespace: namespace, name: "node_1", subscribesTo: ['test_channel'] })
 
     Core(data => {
         if (data === expected) {
             result[1] = true
             return true
         }
-    }, { key: "tests", name: "node_2", subscribesTo: ['test_channel_2'], broadcasts:['node_1'] })
+    }, { key: "tests", namespace: namespace, name: "node_2", subscribesTo: ['test_channel_2'], broadcasts: ['node_1'] })
 
     Core(data => {
         if (finished === true) return
@@ -31,7 +33,7 @@ function broadcast_multi_test(callback) {
             callback(true)
         }
 
-    }, { key: "tests", name: "node_3", subscribesTo: ['node_1', 'node_2'] })
+    }, { key: "tests", namespace: namespace, name: "node_3", subscribesTo: ['node_1', 'node_2'] })
 }
 
 run(broadcast_multi_test)

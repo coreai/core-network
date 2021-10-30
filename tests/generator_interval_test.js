@@ -2,6 +2,8 @@ const { Core } = require('../main')
 const { equals } = require('../src/utils')
 const { run } = require('./utils/run')
 
+const namespace = "generator_interval_test"
+
 /**
  * Generator Test - Interval
  * 
@@ -31,7 +33,7 @@ function generator_interval_test(callback) {
         }
         if (count < total) count++
         return count
-    }, { key: "tests", generator: 1000 })
+    }, { key: "tests", namespace: namespace, generator: 1000 })
 
 
     let heard = []
@@ -44,7 +46,7 @@ function generator_interval_test(callback) {
             callback(result)
             return heard
         }
-    },{key: "tests", subscribesTo: ['*']})
+    },{key: "tests", namespace: namespace, subscribesTo: ['*']})
 }
 
 run(generator_interval_test)
