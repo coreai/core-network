@@ -18,12 +18,14 @@ function Build(functions, parameters) {
         const publisher = new Publisher({ ...parameters, name: parameters.name + "_publisher" })
         const subscriber = new Subscriber({ ...parameters, name: parameters.name + "_subscriber" })
         parameters.subscribesTo.forEach(channel => {
-            subscriber.on(channel, data => {
+            subscriber.on(channel, async data => {
                 let valid_data = Validator(parameters, Parser(parameters, data))
                 if (valid_data !== false) {
                     log(parameters, "Processing", data)
-                    let output = functions(valid_data)
-                    publisher.publish(parameters.broadcasts[0], output)
+                    Promise.resolve(functions(valid_data))
+                    .then(output => publisher.publish(parameters.broadcasts[0], output))
+                    .catch(err => log(parameters, 'Outputting', err))
+
                 }
             })
         })

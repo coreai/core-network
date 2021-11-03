@@ -1,4 +1,5 @@
 const { Core } = require('./src/core')
-const defaults = require('./src/parameters/defaults.json')
+const { log } = require('./src/utils')
 
-module.exports = { Core }
+
+module.exports = { Core, log }
