@@ -3,7 +3,7 @@ function run(test) {
     let timer = setTimeout(() => {
         process.send ? process.send({ name: test.name, result: false, reason:'Timeout' }) : console.log({name: test.name, result: false, reason:'Timeout'})
         process.exit()
-    }, 15000)
+    }, 20000)
 
     test(result => {
         let report = { name: test.name, result, reason: 'Internal' }

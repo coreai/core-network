@@ -29,8 +29,8 @@ async function node(data, passes, callback) {
 
 function fully_connected_test(callback) {
     let passes = 4
-    Core(data => node(data, passes, callback), { key: "tests", namespace: namespace  })
-    Core(data => node(data, passes, callback), { key: "tests", namespace: namespace })
+    Core(data => node(data, passes, callback), { key: "tests", namespace: namespace, subscribesTo: ['*'] })
+    Core(data => node(data, passes, callback), { key: "tests", namespace: namespace, subscribesTo: ['*'] })
     Core(start, { key: "tests", namespace: namespace, generator: true })
 }
 
