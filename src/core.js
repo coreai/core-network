@@ -41,7 +41,7 @@ function Parameterize(parameters) {
     if (!parameters) parameters = {}
     if (!parameters.name || parameters.name.length === 0) parameters.name = defaults.name + Date.now()
     if (!parameters.broadcasts) parameters.broadcasts = [parameters.name + '_' + defaults.broadcasts[0]]
-    if (!parameters.subscribesTo && !parameters.generator) parameters.subscribesTo = [parameters.name + '_' + defaults.subscribesTo[0]]
+    if (!parameters.subscribesTo && !parameters.generator) parameters.subscribesTo = defaults.subscribesTo
     if (!parameters.logging) parameters.logging = defaults.logging
     // log(parameters, "Parameters", parameters)
     return parameters

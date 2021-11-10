@@ -2,8 +2,8 @@
     "name": "test",
     "namespace": "test_namespace",
     "key": "test_key",
-    "subscribesTo": ["input"],
-    "broadcasts": ["output"],
+    "subscribesTo": ["*"],
+    "broadcasts": ["*"],
     "logging": "true",
     "generator": "false",
     "external":"endpoint"
