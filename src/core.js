@@ -3,7 +3,6 @@ const { Parser } = require('./parser')
 const { log } = require('./utils')
 const defaults = require('./parameters/defaults.json')
 const { Subscriber, Publisher } = require('cote')
-const { v4: uuidv4 } = require('uuid')
 
 function Core(functions, parameters) {
     return Build(functions, Parameterize(parameters))
@@ -13,10 +12,10 @@ function Build(functions, parameters) {
     if (parameters.generator && parameters.generator !== 'false') {
         const publisher = new Publisher({ ...parameters, name: parameters.name + "_publisher" })
         if (typeof parameters.generator === 'number') return setInterval(() => Promise.resolve(functions())
-            .then(output => publisher.publish(parameters.broadcasts[0], {sender: parameters.name, output}))
+            .then(output => publisher.publish(parameters.broadcasts[0], output))
             .catch(err => log(parameters, 'Outputting', err)), parameters.generator)
         else return Promise.resolve(functions())
-            .then(output => publisher.publish(parameters.broadcasts[0], {sender: parameters.name, output}))
+            .then(output => publisher.publish(parameters.broadcasts[0], output))
             .catch(err => log(parameters, 'Outputting', err))
     }
     else {
@@ -28,7 +27,7 @@ function Build(functions, parameters) {
                 if (valid_data !== false) {
                     log(parameters, "Processing", data)
                     Promise.resolve(functions(valid_data))
-                        .then(output => publisher.publish(parameters.broadcasts[0], {sender: parameters.name, output}))
+                        .then(output => publisher.publish(parameters.broadcasts[0], output))
                         .catch(err => log(parameters, 'Outputting', err))
                 }
             })
@@ -40,7 +39,7 @@ function Build(functions, parameters) {
 
 function Parameterize(parameters) {
     if (!parameters) parameters = {}
-    if (!parameters.name || parameters.name.length === 0) parameters.name = uuidv4()
+    if (!parameters.name || parameters.name.length === 0) parameters.name = defaults.name + Date.now()
     if (!parameters.broadcasts) parameters.broadcasts = [parameters.name + '_' + defaults.broadcasts[0]]
     if (!parameters.subscribesTo && !parameters.generator) parameters.subscribesTo = defaults.subscribesTo
     if (!parameters.logging) parameters.logging = defaults.logging
