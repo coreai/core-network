@@ -5,8 +5,8 @@ const key = "namespace_tests"
 
 function namespace_test(callback) {
     let result = false
-    let expected = "namespace_test_" + Date.now()
-    Core(() => expected, {key: key, namespace:"test", generator: true})
+    const expected = "namespace_test_" + Date.now()
+    Core(() => expected, {key: key, namespace:"test", generator: 1000})
     Core(data => {
         if (data === expected) {
             result = true

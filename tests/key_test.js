@@ -2,11 +2,16 @@ const { Core } = require('../main')
 const { run } = require('./utils/run')
 
 const namespace = "key_test"
+const expected = namespace + Date.now()
+
+function start() {
+    return new Promise(resolve => setTimeout(() => resolve(expected), 1000))
+}
+
 
 function key_test(callback) {
     let result = false
-    let expected = "key_test_" + Date.now()
-    Core(() => expected, {key: "tests", namespace: namespace, generator: true})
+    Core(() => expected, {key: "tests", namespace: namespace, generator: 1000})
     Core(data => {
         if (data === expected) {
             result = true

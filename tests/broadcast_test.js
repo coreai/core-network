@@ -16,7 +16,7 @@ function broadcast_test(callback) {
     let node_2 = false
     Core(data => node(data, passes, "node_1"), { name: "node_1", key: "tests", namespace: namespace, subscribesTo: ['test_channel'], broadcasts: ['test_channel'], logging: false})
     Core(data => node(data, passes, "node_2"), { name: "node_2", key: "tests", namespace: namespace, subscribesTo: ['test_channel'], broadcasts: ['test_channel'], logging: false})
-    setTimeout(() => Core(() => 0, { name: "generator", key: "tests", namespace: namespace, generator: true, broadcasts: ['test_channel'], logging: false}), 1000)
+    Core(() => 0, { name: "generator", key: "tests", namespace: namespace, generator: 1000, broadcasts: ['test_channel'], logging: false})
     Core(data => {
         if(node_1 === true && node_2 === true) return 
         if(data.status === 'done') {

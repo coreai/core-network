@@ -19,7 +19,7 @@ function name_test(callback) {
             callback(result)
         }
         return
-    }, { name: expected, key: key, subscribesTo: ['*'], logging: true })
+    }, { name: expected, subscribesTo: ['*'], logging: true })
 }
 
 run(name_test)

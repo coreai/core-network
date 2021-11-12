@@ -31,7 +31,7 @@ function fully_connected_test(callback) {
     let passes = 4
     Core(data => node(data, passes, callback), { key: "tests", namespace: namespace, subscribesTo: ['*'] })
     Core(data => node(data, passes, callback), { key: "tests", namespace: namespace, subscribesTo: ['*'] })
-    Core(start, { key: "tests", namespace: namespace, generator: true })
+    Core(() => 0, { key: "tests", namespace: namespace, generator: 1000 })
 }
 
 run(fully_connected_test)
