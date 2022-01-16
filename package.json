@@ -1,6 +1,6 @@
 {
   "name": "coreai-network",
-  "version": "0.0.21",
+  "version": "0.0.22",
   "description": "A framework for functional service networks.",
   "main": "main.js",
   "scripts": {
