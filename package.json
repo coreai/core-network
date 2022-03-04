@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/coreai/core-network#readme",
   "dependencies": {
-    "cote": "^1.0.3"
+    "cote": "^1.0.3",
+    "zeromq": "^5.2.8"
   }
 }
