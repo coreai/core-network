@@ -9,22 +9,22 @@ function start() {
 
 function node(data, passes, name) {
     console.log(typeof data, data, passes, name)
-    if (data === passes) return {status: 'done', name}
-    if (typeof data === 'object' && data.status === 'done') return 
+    if (data === passes) return { status: 'done', name }
+    if (typeof data === 'object' && data.status === 'done') return
     if (typeof data === 'number') data++
     return data
 }
 
 function broadcast_test(callback) {
     let passes = 4
-    Core(data => node(data, passes, "node_1"))
-    Core(data => node(data, passes, "node_2"))
-    Core(start)
+    Core(data => node(data, passes, "node_1"), namespace)
+    Core(data => node(data, passes, "node_2"), namespace)
+    Core(start, namespace)
     Core(data => {
-        if(typeof data === 'object' && data.status === 'done') {
-           callback(true)
+        if (typeof data === 'object' && data.status === 'done') {
+            callback(true)
         }
-    })
+    }, namespace)
 
 }
 

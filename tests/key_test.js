@@ -11,14 +11,14 @@ function start() {
 
 function key_test(callback) {
     let result = false
-    Core(start)
+    Core(start, namespace)
     Core(data => {
         if (data === expected) {
             result = true
             callback(result)
             return
         }
-    })
+    },namespace)
     
     Core(data => {
         if (data === expected) {

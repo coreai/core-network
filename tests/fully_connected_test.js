@@ -29,9 +29,9 @@ async function node(data, passes, callback) {
 
 function fully_connected_test(callback) {
     let passes = 4
-    Core(data => node(data, passes, callback))
-    Core(data => node(data, passes, callback))
-    Core(start)
+    Core(data => node(data, passes, callback),namespace)
+    Core(data => node(data, passes, callback),namespace)
+    Core(start, namespace)
 }
 
 run(fully_connected_test)

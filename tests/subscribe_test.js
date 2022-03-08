@@ -28,9 +28,9 @@ function node(data, passes, callback) {
  */
 function subscribe_test(callback) {
     let passes = 4
-    Core(data => node(data, passes, callback))
-    Core(data => node(data, passes, callback))
-    Core(start)
+    Core(data => node(data, passes, callback),namespace)
+    Core(data => node(data, passes, callback),namespace)
+    Core(start,namespace)
 }
 
 run(subscribe_test)

@@ -1,9 +1,11 @@
+const timeout = 30000
+
 function run(test) {
     if (process.send) process.send(`Starting : ${test.name}`)
     let timer = setTimeout(() => {
         process.send ? process.send({ name: test.name, result: false, reason:'Timeout' }) : console.log({name: test.name, result: false, reason:'Timeout'})
         process.exit()
-    }, 20000)
+    }, timeout)
 
     test(result => {
         let report = { name: test.name, result, reason: 'Internal' }

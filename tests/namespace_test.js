@@ -11,14 +11,14 @@ function start() {
 function namespace_test(callback) {
     let result = false
     
-    Core(start)
+    Core(start, key)
     Core(data => {
         if (data === expected) {
             result = true
             callback(result)
             return
         }
-    })
+    },key)
     
     Core(data => {
         if (data === expected) {

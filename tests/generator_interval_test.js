@@ -40,7 +40,7 @@ function generator_interval_test(callback) {
     console.log("expected: ", expected)
     count = 0
 
-    Core(() => generator(count))
+    Core(() => generator(count), namespace)
 
     let heard = []
     Core(data => {
@@ -52,7 +52,7 @@ function generator_interval_test(callback) {
             callback(result)
             return heard
         }
-    })
+    }, namespace)
 }
 
 run(generator_interval_test)

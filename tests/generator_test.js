@@ -10,7 +10,7 @@ function start() {
 
 function generator_test(callback) {
     let result = false
-    Core(() => start(), { key: "tests", namespace: namespace, generator: true })
+    Core(() => start(),namespace)
     Core(data => {
         console.log(data)
         if (data === expected) {
@@ -18,7 +18,7 @@ function generator_test(callback) {
             callback(result)
             return
         }
-    })
+    }, namespace)
 }
 
 run(generator_test)
