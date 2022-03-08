@@ -1,15 +1,31 @@
 const { log } = require('./utils')
 
-function Parser(parameters, data) {
-    log(parameters, `Parsing {${typeof data}}`, data)
-    return data
+function Decode(parameters, data) {
+    log(parameters, `Decoding {${typeof data}}`, data)
     try {
-        if (typeof data === 'string') return JSON.parse(data)
+        if (typeof data === 'string') return Parse(data) 
         else return data
-    } catch (error) {
+    } catch (error) { 
         try { return JSON.stringify(data) }
-        catch (error) { return data }
+        catch (error) { return }
     }
 }
 
-module.exports = { Parser }
+function Encode(parameters, data){
+    log(parameters, `Encoding {${typeof data}}`, data)
+    try{ return JSON.stringify(data) } 
+    catch (error) { return }
+}
+
+function Parse(data) {
+    try {
+        let int = parseInt(data)
+        if(isNaN(int)) return JSON.parse(data)
+        else return int
+    } catch (error) {
+        return
+    }
+
+}
+
+module.exports = { Encode, Decode }
