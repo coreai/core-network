@@ -11,14 +11,14 @@ function start() {
 
 function key_test(callback) {
     let result = false
-    Core(() => expected, {key: "tests", namespace: namespace, generator: 1000})
+    Core(start)
     Core(data => {
         if (data === expected) {
             result = true
             callback(result)
             return
         }
-    }, { key: "tests", name:"node_1", namespace: namespace, subscribesTo: ['*'] })
+    })
     
     Core(data => {
         if (data === expected) {
@@ -26,7 +26,7 @@ function key_test(callback) {
             callback(result)
             return
         }
-    }, { key: "not_test", name:"node_2", namespace: namespace, subscribesTo: ['*'] })    
+    })    
 }
 
 run(key_test)

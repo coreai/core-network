@@ -19,7 +19,7 @@ function name_test(callback) {
             callback(result)
         }
         return
-    }, { name: expected, subscribesTo: ['*'], logging: true })
+    })
 }
 
 run(name_test)

@@ -4,6 +4,20 @@ const { run } = require('./utils/run')
 
 const namespace = "generator_interval_test"
 
+
+function generator(count) { 
+    let publisher = setInterval(() => {
+        {
+            if (count >= total) {
+                clearInterval(publisher)
+                return 'done'
+            }
+            if (count < total) count++
+            return count
+        }
+    }, 1000)
+}
+
 /**
  * Generator Test - Interval
  * 
@@ -26,18 +40,10 @@ function generator_interval_test(callback) {
     console.log("expected: ", expected)
     count = 0
 
-    let publisher = Core(() => {
-        if (count >= total) {
-            clearInterval(publisher)
-            return 'done'
-        }
-        if (count < total) count++
-        return count
-    }, { key: "tests", namespace: namespace, generator: 1000 })
-
+    Core(() => generator(count))
 
     let heard = []
-    let subscriber = Core(data => {
+    Core(data => {
         console.log("Heard: ", data)
         if(typeof data === 'number' || typeof data === 'string') heard.push(data)
         
@@ -46,7 +52,7 @@ function generator_interval_test(callback) {
             callback(result)
             return heard
         }
-    },{key: "tests", namespace: namespace, subscribesTo: ['*']})
+    })
 }
 
 run(generator_interval_test)

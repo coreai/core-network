@@ -3,6 +3,7 @@ const { run } = require('./utils/run')
 
 const namespace = "generator_test"
 const expected = "generator_test_" + Date.now()
+
 function start() {
     return new Promise(resolve => setTimeout(() => resolve(expected), 2000))    
 }
@@ -17,7 +18,7 @@ function generator_test(callback) {
             callback(result)
             return
         }
-    }, { key: "tests", namespace: namespace, subscribesTo: ['*'] })
+    })
 }
 
 run(generator_test)

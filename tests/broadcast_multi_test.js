@@ -11,14 +11,15 @@ function broadcast_multi_test(callback) {
     let result = [false, false]
     const expected = "broadcast_multi_test_" + Date.now()
     let finished = false
-    Core(() => expected, { key: "tests", namespace: namespace, broadcasts: ['test_channel', 'test_channel_2'], generator: 1000 })
+    Core(() => setInterval(() => expected, 1000))
+    
     Core(data => {
         console.log(data)
         if (data === expected) {
             result[0] = true
             return true
         }
-    }, { key: "tests", namespace: namespace, name: "node_1", subscribesTo: ['test_channel'], broadcasts: ['node_1'] })
+    })
 
     Core(data => {
         console.log(data)
@@ -26,7 +27,7 @@ function broadcast_multi_test(callback) {
             result[1] = true
             return true
         }
-    }, { key: "tests", namespace: namespace, name: "node_2", subscribesTo: ['test_channel_2'], broadcasts: ['node_2'] })
+    })
 
     Core(data => {
         if (finished === true) return
@@ -35,7 +36,7 @@ function broadcast_multi_test(callback) {
             callback(true)
         }
 
-    }, { key: "tests", namespace: namespace, name: "node_3", subscribesTo: ['node_1', 'node_2'] })
+    })
 }
 
 run(broadcast_multi_test)
