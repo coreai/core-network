@@ -10,16 +10,15 @@ const parameters = { logging: true }
  * @param {*} func 
  * 
  */
-function Core(func) {
+function Core(func, group="core") {
     const core = new Zyre()
-    core.start(() => core.join("core"))
-
+    core.start(() => core.join(group))
 
     log(parameters, "Core", "Started!")
 
     if (func.length === 0) {
         Run(func)
-            .then(output => core.shout("core", output))
+            .then(output => core.shout(group, output))
             .catch(err => log(parameters, "Run Error:", err))
 
     }
@@ -27,7 +26,7 @@ function Core(func) {
     core.on('shout', async (id, name, message, group) => {
         log(parameters, "Heard", message)
         Run(func, message)
-            .then(output => core.shout("core", output))
+            .then(output => core.shout(group, output))
             .catch(err => log(parameters, "Run Error: ", err))
     })
 
