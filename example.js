@@ -8,6 +8,7 @@ function Generator() {
 function Listener(data) {
     // have to process for all possible inputs
     console.log("Heard: ", data)
+    process.exit()
 }
 
 Core(Listener)

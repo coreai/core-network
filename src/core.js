@@ -3,7 +3,7 @@ const { Decode, Encode } = require('./parser')
 const { log } = require('./utils')
 const { Validate } = require('./validator')
 
-const parameters = { logging: true }
+const parameters = { logging: false }
 
 /**
  * convert inputs and outputs into network messages
@@ -12,7 +12,8 @@ const parameters = { logging: true }
  */
 function Core(func, group="core") {
     const core = new Zyre()
-    core.start(() => core.join(group))
+    if(typeof group === "string") core.start(() => core.join(group))
+    // else if (Array.isArray(groups)) groupscore.start(() => groups.map(group => core.join(group)))
 
     log(parameters, "Core", "Started!")
 
@@ -29,8 +30,10 @@ function Core(func, group="core") {
             .then(output => core.shout(group, output))
             .catch(err => log(parameters, "Run Error: ", err))
     })
-
+    
 }
+
+
 
 function Run(func, message) {
     return new Promise(async (resolve, reject) => {
