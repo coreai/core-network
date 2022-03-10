@@ -18,7 +18,7 @@ Core(function, group)
 
 ## Example
 ```
-const { Core } = require('./main')
+const { Core } = require('coreai-network')
 
 function Generator() {
     let message = "Hello! now: " + Date.now()
@@ -37,4 +37,4 @@ Core(Generator)
 
 
 ## Dependencies
-- https://https://interpretor.github.io/zyre.js/ --> for mesh network prototyping
+- https://interpretor.github.io/zyre.js/ --> for mesh network prototyping
