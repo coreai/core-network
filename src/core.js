@@ -8,58 +8,60 @@ const parameters = { logging: true }
 /**
  * convert inputs and outputs into network messages
  * @param {function} func 
- * @param {object} params
- * @param {string} params.listen group name to listen for inputs [default: "core"]
- * @param {string} params.returns return output group name, [default: func.name]
  */
-function Connect(func, {listen, returns} = {}) {
-    if(!listen) listen = "core"
-    if(!returns) returns = func.name ? func.name : "core"
+function Connect(func) {
     const core = new Zyre()
-     core.start(() => {
-        if(typeof listen === "string") core.join(listen)
-        if(typeof returns === "string") core.join(returns)
-    })
-    
-    // else if (Array.isArray(groups)) groupscore.start(() => groups.map(group => core.join(group)))
-
+    core.start(() => core.join("core"))
     parameters.name = core.getIdentity()
-    log(parameters, "Core", `Started! ${listen} | ${returns}`)
+    parameters.peers = core.getPeers()
+    log(parameters, "Core", `Started!`)
 
-    if (func.length === 0) {
-        Run(func)
-            .then(output => core.shout(returns, output))
-            .catch(err => log(parameters, "Run Error:", err))
-    }
 
-    core.on('shout', async (id, name, message, group) => {
-        log(parameters, "Heard", message)
-        Run(func, message)
-            .then(output => core.shout(returns, output))
-            .catch(err => log(parameters, "Run Error: ", err))
-    })
-    
+    if (func.length === 0) Think(func).then(Talk).catch(Wrong)
+
+    core.on('whisper', Heard)
+    core.on('shout', Heard)
 }
 
 
+function Heard(id, name, message, group) {
+    log(parameters, "Heard", message)
+    //TODO: need to pass function here
+    Think(func, message).then(Talk).catch(Wrong)  
+}
 
-function Run(func, message) {
+/**
+ * 
+ * @param {String | object} say message to communicate 
+ * @param {String} say.message (optional) message to communicate 
+ * @param {String} say.to (optional) id of node to send message to
+ */
+function Talk(say) {
+    if(typeof say === 'string') core.shout("core", say)
+    if(typeof say === 'object' && typeof say.to === 'string' && typeof say.message === 'string')core.whisper(say.to, say.message)
+}
+
+function Think(func, message) {
     return new Promise(async (resolve, reject) => {
         let output
         if (message) {
             let input = Validate(parameters, Decode(parameters, message))
-            if(input === false) {
+            if (input === false) {
                 reject("Invalid input. " + input)
                 return
-            }  
+            }
             output = Encode(parameters, await func(input))
         }
         else output = Encode(parameters, await func())
-    
+
         resolve(output)
     })
 
 
 }
 
-module.exports = { Run, Connect }
+function Wrong(err) {
+    log(parameters, "Error: ", err)
+}
+
+module.exports = { Connect }
