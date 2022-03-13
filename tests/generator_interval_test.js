@@ -3,33 +3,14 @@ const { equals } = require('../src/utils')
 const { run } = require('./utils/run')
 
 const namespace = "generator_interval_test"
+const total = 3
+const heard = []
 
+let count = 0
+let result = false
+let expected = []
 
-function generator(count) { 
-    let publisher = setInterval(() => {
-        {
-            if (count >= total) {
-                clearInterval(publisher)
-                return 'done'
-            }
-            if (count < total) count++
-            return count
-        }
-    }, 1000)
-}
-
-/**
- * Generator Test - Interval
- * 
- * Builds expected messages based on count of messages to send. 
- * Listens for expected messages, compares recieved against expected.
- */
-function generator_interval_test(callback) {
-    let count = 0
-    let total = 3
-
-    let result = false
-    let expected = []
+function prepare() {
     console.log('preparing generator test...')
     do {
         count++
@@ -38,21 +19,51 @@ function generator_interval_test(callback) {
     expected.push('done')
 
     console.log("expected: ", expected)
-    count = 0
+}
 
-    Core(() => generator(count), namespace)
+function generator_listener(data, callback) {
+    console.log("Heard: ", data)
+    if (typeof data === 'number' || typeof data === 'string') heard.push(data)
 
-    let heard = []
-    Core(data => {
-        console.log("Heard: ", data)
-        if(typeof data === 'number' || typeof data === 'string') heard.push(data)
-        
-        if(data === 'done') {
-            result = equals(expected, heard)
-            callback(result)
-            return heard
+    if (data === 'done') {
+        result = equals(expected, heard)
+        callback(result)
+        return heard
+    }
+}
+
+function generator(data) {
+    if(typeof data === 'number') {
+        if(data >= total) return new Promise(resolve => setTimeout(() => resolve('done'), 1000))
+        if (data < total) {
+            let count = data
+            count++
+            console.log(count)
+            return new Promise(resolve => setTimeout(() => resolve(count), 1000))
         }
-    }, namespace)
+    }
+    
+}
+
+function start() {
+    return new Promise(resolve => setTimeout(() => resolve(0), 1000))
+}
+
+
+/**
+ * Generator Test - Interval
+ * 
+ * Builds expected messages based on count of messages to send. 
+ * Listens for expected messages, compares recieved against expected.
+ */
+function generator_interval_test(callback) {
+    prepare()
+    Core(data => generator_listener(data, callback), { listen: namespace })
+
+    Core(generator, { listen: namespace, returns: namespace })
+
+    Core(start, { returns: namespace })
+   
 }
 
 run(generator_interval_test)

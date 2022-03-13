@@ -11,7 +11,7 @@ function broadcast_multi_test(callback) {
     let result = [false, false]
     const expected = "broadcast_multi_test_" + Date.now()
     let finished = false
-    Core(() => setInterval(() => expected, 1000), namespace)
+    Core(() => new Promise(resolve => setTimeout(() => resolve(expected), 1000)), namespace)
     
     Core(data => {
         console.log(data)
@@ -19,7 +19,7 @@ function broadcast_multi_test(callback) {
             result[0] = true
             return true
         }
-    }, namespace)
+    }, {listen: namespace})
 
     Core(data => {
         console.log(data)
@@ -27,7 +27,7 @@ function broadcast_multi_test(callback) {
             result[1] = true
             return true
         }
-    }, namespace)
+    }, {listen: namespace})
 
     Core(data => {
         if (finished === true) return
@@ -36,7 +36,7 @@ function broadcast_multi_test(callback) {
             callback(true)
         }
 
-    }, namespace)
+    }, {listen: namespace})
 }
 
 run(broadcast_multi_test)

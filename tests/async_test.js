@@ -30,9 +30,9 @@ async function node(data, passes, callback) {
 
 function async_test(callback) {
     let passes = 4
-    Core(data => node(data, passes, callback), namespace)
-    Core(data => node(data, passes, callback), namespace)
-    Core(start, namespace)
+    Core(data => node(data, passes, callback), {listen: namespace+"node2", returns: namespace+"node1"})
+    Core(data => node(data, passes, callback), {listen: namespace+"node1", returns: namespace+"node2"})
+    Core(start, {returns: namespace+"node2"})
 }
 
 run(async_test)

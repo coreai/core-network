@@ -17,14 +17,14 @@ function node(data, passes, name) {
 
 function broadcast_test(callback) {
     let passes = 4
-    Core(data => node(data, passes, "node_1"), namespace)
-    Core(data => node(data, passes, "node_2"), namespace)
-    Core(start, namespace)
+    Core(data => node(data, passes, "node_1"), {listen: namespace})
+    Core(data => node(data, passes, "node_2"), {listen: namespace})
+    Core(start, {returns: namespace})
     Core(data => {
         if (typeof data === 'object' && data.status === 'done') {
             callback(true)
         }
-    }, namespace)
+    }, {listen: namespace})
 
 }
 

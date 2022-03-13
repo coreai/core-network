@@ -3,6 +3,9 @@ const Zyre = require('zyre.js')
 const zyre = new Zyre()
 const finder = new Zyre()
 
+/**
+ * Test Basic Zyre Functions
+ */
 
 zyre.start(() => {
     zyre.join("hello")

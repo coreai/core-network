@@ -3,31 +3,39 @@ const { Decode, Encode } = require('./parser')
 const { log } = require('./utils')
 const { Validate } = require('./validator')
 
-const parameters = { logging: false }
+const parameters = { logging: true }
 
 /**
  * convert inputs and outputs into network messages
- * @param {*} func 
- * 
+ * @param {function} func 
+ * @param {object} params
+ * @param {string} params.listen group name to listen for inputs [default: "core"]
+ * @param {string} params.returns return output group name, [default: func.name]
  */
-function Core(func, group="core") {
+function Connect(func, {listen, returns} = {}) {
+    if(!listen) listen = "core"
+    if(!returns) returns = func.name ? func.name : "core"
     const core = new Zyre()
-    if(typeof group === "string") core.start(() => core.join(group))
+     core.start(() => {
+        if(typeof listen === "string") core.join(listen)
+        if(typeof returns === "string") core.join(returns)
+    })
+    
     // else if (Array.isArray(groups)) groupscore.start(() => groups.map(group => core.join(group)))
 
-    log(parameters, "Core", "Started!")
+    parameters.name = core.getIdentity()
+    log(parameters, "Core", `Started! ${listen} | ${returns}`)
 
     if (func.length === 0) {
         Run(func)
-            .then(output => core.shout(group, output))
+            .then(output => core.shout(returns, output))
             .catch(err => log(parameters, "Run Error:", err))
-
     }
 
     core.on('shout', async (id, name, message, group) => {
         log(parameters, "Heard", message)
         Run(func, message)
-            .then(output => core.shout(group, output))
+            .then(output => core.shout(returns, output))
             .catch(err => log(parameters, "Run Error: ", err))
     })
     
@@ -37,15 +45,14 @@ function Core(func, group="core") {
 
 function Run(func, message) {
     return new Promise(async (resolve, reject) => {
-        let input, output
+        let output
         if (message) {
-            
-            let data = Validate(parameters, Decode(parameters, message))
-            if(data === false) {
-                reject("Invalid Data. " + data)
+            let input = Validate(parameters, Decode(parameters, message))
+            if(input === false) {
+                reject("Invalid input. " + input)
                 return
             }  
-            output = Encode(parameters, await func(data))
+            output = Encode(parameters, await func(input))
         }
         else output = Encode(parameters, await func())
     
@@ -55,4 +62,4 @@ function Run(func, message) {
 
 }
 
-module.exports = { Core }
+module.exports = { Run, Connect }

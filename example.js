@@ -11,5 +11,5 @@ function Listener(data) {
     process.exit()
 }
 
-Core(Listener)
+Core(Listener, {listen: "Generator"})
 Core(Generator)
