@@ -1,12 +1,12 @@
-const { Connect, Listen, Say, Heard, Talk, Think, Wrong } = require('./src/core')
-const { log } = require('./src/utils')
+const { Connect, Listen, Say, Think, Wrong } = require('./src/core')
 
 function Core(func) {
-    Connect().then(core => {
+    try {
+        const core = await Connect()
         Say(core, func)
         Listen(core)
         Think(core, func)
-    }).catch(Wrong)
+    } catch (error) { Wrong(error) }
 }
 
-module.exports = { Core, log }
+module.exports = { Core }

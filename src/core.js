@@ -49,7 +49,7 @@ function Thoughts(func, hears) {
 }
 
 /**
- * Listen first, then speak
+ * Listen, think, then speak
  * @param {object} core 
  * @param {function} func 
  */
@@ -58,7 +58,7 @@ function Think(core, func) {
 }
 
 /**
- * Speak Thoughts, no listening required
+ * Speak Thoughts, no listening
  * @param {object} core 
  * @param {function} func 
  */
