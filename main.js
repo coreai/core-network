@@ -1,6 +1,6 @@
 const { Connect, Listen, Say, Think, Wrong } = require('./src/core')
 
-function Core(func) {
+async function Core(func) {
     try {
         const core = await Connect()
         Say(core, func)

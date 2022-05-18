@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/coreai/core-network#readme",
   "dependencies": {
+    "retriest": "^0.0.1",
     "zyre.js": "^1.2.2"
   }
 }

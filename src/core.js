@@ -15,7 +15,7 @@ function Connect() {
     parameters.name = core.getIdentity()
     parameters.peers = core.getPeers()
     log(parameters, "Core", `Started!`)
-    return new Promise.resolve(core)
+    return Promise.resolve(core)
 }
 
 function Listen(core) {
